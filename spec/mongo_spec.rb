@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'mongo'
-require 'baconmocha'
+require 'mocha'
+require 'rspec'
 
 $: << File.dirname(__FILE__) + '/../lib'
 require 'heroku'
@@ -63,7 +64,7 @@ describe Heroku::Command::Mongo do
       col.insert(:id => 2, :name => 'second')
 
       @mongo.send(:transfer, @from_uri, @to_uri)
-      @to.collection_names.should.include('a')
+      @to.collection_names.should include('a')
       @to.collection('a').find_one(:id => 1)['name'].should == 'first'
     end
 

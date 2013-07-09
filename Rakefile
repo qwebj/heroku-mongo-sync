@@ -1,6 +1,6 @@
 desc 'Run specs'
 task :spec do
-  sh 'bacon -s spec/*_spec.rb'
+  sh 'rspec spec/*_spec.rb'
 end
 task :default => :spec
 
