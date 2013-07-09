@@ -20,6 +20,7 @@ describe Heroku::Command::Mongo do
     @mongo.expects(:error)
     Mongo::Connection.stubs(:new).raises(Mongo::ConnectionFailure)
     @mongo.send(:make_connection, URI.parse('mongodb://localhost'))
+    Mongo::Connection.unstub(:new)
   end
 
   it "rejects urls without host" do
