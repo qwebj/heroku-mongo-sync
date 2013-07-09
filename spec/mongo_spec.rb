@@ -5,6 +5,8 @@ require 'baconmocha'
 $: << File.dirname(__FILE__) + '/../lib'
 require 'heroku'
 require 'heroku/command'
+require 'heroku/command/base'
+require 'heroku/command/help'
 require 'heroku/command/mongo'
 
 describe Heroku::Command::Mongo do
