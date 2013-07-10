@@ -50,7 +50,7 @@ module Heroku::Command
       end
 
       def heroku_mongo_uri
-        config = heroku.config_vars(app)
+        config = Heroku::Auth.api.get_config_vars(app).body
         url    = config['MONGO_URL'] || config['MONGOHQ_URL'] || config['MONGOLAB_URI']
         error("Could not find the MONGO_URL for #{app}") unless url
         make_uri(url)
