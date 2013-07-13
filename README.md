@@ -8,7 +8,7 @@ somewhere else, just make sure you have access from your local machine.
 
 ## Installation
 
-    $ heroku plugins:install http://github.com/pedro/heroku-mongo-sync.git
+    $ heroku plugins:install http://github.com/marcofognog/heroku-mongo-sync
 
 ## Config
 
@@ -56,5 +56,6 @@ the one to pull/push to by the git remote:
 
 Created by Pedro Belo. 
 Support for indexes, users and more added by Ben Wyrosdick.
+Maintained by Marco Antonio
 
 Use at your own risk.
