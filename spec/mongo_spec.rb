@@ -77,5 +77,9 @@ describe Heroku::Command::Mongo do
       @mongo.send(:transfer, @from_uri, @to_uri)
       @to.collection('a').size.should == 1
     end
+
+    it "doesn't copy a database to itself" do
+      lambda { @mongo.send(:transfer, @from_uri, @from_uri) }.should raise_error
+    end
   end
 end

@@ -22,6 +22,7 @@ module Heroku::Command
 
     protected
       def transfer(from, to)
+        raise "The destination and origin URL cannot be the same." if from == to
         origin = make_connection(from)
         dest   = make_connection(to)
 
