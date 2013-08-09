@@ -18,20 +18,26 @@ module Heroku::Command
     def push
       display "THIS WILL REPLACE ALL DATA for #{app} ON #{heroku_mongo_uri.host} WITH #{local_mongo_uri.host}"
       display "Are you sure? (y/n) ", false
+      some_info()
       return unless ask.downcase == 'y'
       transfer(local_mongo_uri, heroku_mongo_uri)
     end
 
     def pull
       display "Replacing the #{app} db at #{local_mongo_uri.host} with #{heroku_mongo_uri.host}"
-      display "Except collections: #{@except.join(', ')}" if @except.any?
-      display "Sync only: #{@only.join(', ')}" if @only.any?
+      some_info()
       transfer(heroku_mongo_uri, local_mongo_uri)
     end
 
     protected
+      def some_info
+        display "Except collections: #{@except.join(', ')}" if @except.any?
+        display "Sync only: #{@only.join(', ')}" if @only.any?
+      end
+
       def transfer(from, to)
         raise "The destination and origin URL cannot be the same." if from == to
+        raise "Only or Except not both" if @only.any? and @except.any?
         origin = make_connection(from)
         dest   = make_connection(to)
 
