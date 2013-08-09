@@ -1,6 +1,13 @@
 module Heroku::Command
   class Mongo < BaseWithApp
     def initialize(*args)
+      opts = Trollop::options do
+        opt :app, "Application name", :type => :string
+        opt :except, "Except collections for sync", :short => 'e', :type => :strings
+        opt :only, "Collection for sync", :short => 'o', :type => :strings
+      end
+      @except = opts[:except] || []
+      @only = opts[:only] || []
       super
 
       require 'mongo'
@@ -17,6 +24,8 @@ module Heroku::Command
 
     def pull
       display "Replacing the #{app} db at #{local_mongo_uri.host} with #{heroku_mongo_uri.host}"
+      display "Except collections: #{@except.join(', ')}" if @except.any?
+      display "Sync only: #{@only.join(', ')}" if @only.any?
       transfer(heroku_mongo_uri, local_mongo_uri)
     end
 
@@ -27,7 +36,7 @@ module Heroku::Command
         dest   = make_connection(to)
 
         origin.collections.each do |col|
-          next if col.name =~ /^system\./
+          next if col.name =~ /^system\./ or @except.include?(col.name) or not @only.include?(col.name)
 
           dest.drop_collection(col.name)
           dest_col = dest.create_collection(col.name)
@@ -44,8 +53,10 @@ module Heroku::Command
         dest_index_col = dest.collection('system.indexes')
         origin_index_col = origin.collection('system.indexes')
         origin_index_col.find().each do |index|
-          index['ns'] = index['ns'].sub(origin_index_col.db.name, dest_index_col.db.name)
-          dest_index_col.insert index
+          if index['_id']
+            index['ns'] = index['ns'].sub(origin_index_col.db.name, dest_index_col.db.name)
+            dest_index_col.insert index
+          end
         end
         display " done"
       end
