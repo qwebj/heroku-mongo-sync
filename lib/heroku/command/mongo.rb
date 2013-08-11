@@ -42,7 +42,7 @@ module Heroku::Command
         dest   = make_connection(to)
 
         origin.collections.each do |col|
-          next if col.name =~ /^system\./ or @except.include?(col.name) or not @only.include?(col.name)
+          next if col.name =~ /^system\./ or @except.include?(col.name) or @only.any? and !@only.include?(col.name)
 
           dest.drop_collection(col.name)
           dest_col = dest.create_collection(col.name)
